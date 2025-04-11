@@ -5,10 +5,16 @@ module.exports = {
   // Listar todas as formas farmaceuticas
   async listarFarmaceutica(request, response) {
     try {
+
+      const sql = 'SELECT forma_id, forma_nome FROM formasfarmaceuticas;';
+
+      const [rows] = await db.query(sql);
+
       return response.status(200).json({
         sucesso: true,
         mensagem: 'Lista de Formas Farmaceuticas.',
-        dados: null
+        itens: rows.length,
+        dados: rows
       });
     }catch (error) {
       return response.status(500).json({
