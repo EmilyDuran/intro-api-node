@@ -28,11 +28,36 @@ module.exports = {
   // Cadastrar funcionarios
   async cadastrarFuncionario(request, response) {
     try {
-      return response.status(200).json({
-        sucesso: true,
-        mensagem: 'Cadastrar Funcionarios.',
-        dados: null
-      });
+
+      const {cargo, usu_id} = request.body;
+
+      //instrução SQL
+      const sql = `
+          INSERT INTO funcionarios
+              (cargo, usu_id)
+          VALUES
+              (?, ?);
+        `;
+
+        // definição dos dados a serem inseridos em array
+        const values = [cargo, usu_id];
+
+        //execução da instrução sql passando os parâmetros
+        const [result] = await db.query(sql, values);
+
+        // identificação do ID doregistro inserido
+        const dados = {
+            id: result.insertId,
+            cargo,
+            usu_id
+        };
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Cadastro de usuários',
+            dados: dados
+        });
+
     } catch (error) {
       return response.status(500).json({
         sucesso: false,
