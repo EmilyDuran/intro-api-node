@@ -72,26 +72,26 @@ module.exports = {
         // parâmetros recebidos pelo corpo da requisição
         const {forma_nome} = request.body;
         // parâmetros recebido pela URL via params ex: /usuario/1
-        const {usu_id} = request.params;
+        const {forma_id} = request.params;
         //instruções SQL
-        const sql = `UPDATE uduarios SET forma_nome = ?`;
+        const sql = `UPDATE forma_farmaceutica SET forma_nome = ? WHERE forma_id = ?;`;
         // preparo do array com dados que serão atualizados
-        const values = [forma_nome];
+        const values = [forma_nome, forma_id];
         // execução e obtenção de firmação da atualização realizada
-        const atualizaDados = await db.query(sql, values);
+        const [rows] = await db.query(sql, values);
 
       return response.status(200).json({
         sucesso: true,
-        mensagem: 'Usuário ${usu_id} atualizado com sucesso!',
-        dados: atualizaDados[0].affectedRows
-        //mensSql: atualizaDados
+        mensagem: 'Forma farmaceutica atualizado com sucesso!',
+        itens: rows.length,
+        dados: rows
       });
     } catch (error) {
       return response.status(500).json({
         sucesso: false,
         mensagem: 'Erro na requisição.',
         dados: error.mensage
-      })
+      });
     }
   },
 

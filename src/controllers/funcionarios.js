@@ -2,17 +2,17 @@ const db = require('../dataBase/connection');
 
 module.exports = {
 
-  // Listar funcionarios
+  // Listar todos os funcionarios
   async listarFuncionario(request, response) {
     try {
 
       const sql = 'SELECT func_id, cargo, usu_id FROM funcionarios;';
-
+      
       const [rows] = await db.query(sql);
 
       return response.status(200).json({
         sucesso: true,
-        mensagem: 'Lista de Funcionarios.',
+        mensagem: 'Lista de Formas Funcionarios.',
         itens: rows.length,
         dados: rows
       });
@@ -67,22 +67,34 @@ module.exports = {
     }
   },
 
-  // Editar funcionarios
+ // Editar funcionarios
   async editarFuncionario(request, response) {
     try {
-      return response.status(200).json({
-        sucesso: true,
-        mensagem: 'Editar Funcionarios.',
-        dados: null
-      });
-    } catch (error) {
-      return response.status(500).json({
-        sucesso: false,
-        mensagem: 'Erro na requisição.',
-        dados: error.mensage
-      })
-    }
-  },
+      // parâmetros recebidos pelo corpo da requisição
+      const {cargo, usu_id} = request.body;
+      // parâmetros recebido pela URL via params ex: /usuario/1
+      const {func_id} = request.params;
+      //instruções SQL
+      const sql = `UPDATE funcioarios SET cargo = ? WHERE usu_id = ? WHERE = func_id = ?;`;
+      // preparo do array com dados que serão atualizados
+      const values = [cargo, usu_id, func_id];
+      // execução e obtenção de firmação da atualização realizada
+      const [rows] = await db.query(sql, values);
+
+    return response.status(200).json({
+      sucesso: true,
+      mensagem: 'Editar Funcionarios.',
+      itens: rows.length,
+      dados: rows
+    });
+  } catch (error) {
+    return response.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro na requisição.',
+      dados: error.mensage
+    });
+  }
+},
 
   // Apagar funcionarios
   async apagarFuncionario(request, response) {
